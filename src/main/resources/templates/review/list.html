@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<!-- 헤더 포함 -->
+<th:block th:replace="layout/fragments/header :: headerFragment"></th:block>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 페이지</title>
+
+    <style>
+        /* 전체 레이아웃 설정 */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* 전체 화면을 채우기 위해 최소 높이 설정 */
+        }
+
+        .container {
+            flex: 1; /* 컨텐츠가 남은 공간을 채우도록 설정 */
+        }
+
+        .container.container-div {
+            margin-top: 50px;
+        }
+
+        footer {
+            background: #343a40; /* 다크 배경 색상 */
+            color: white;
+            text-align: center;
+            padding: 1rem; /* 패딩 추가 */
+            margin-top: 100px; /* 바디와 footer 간격 추가 */
+        }
+
+
+        h1 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* 등록 버튼 스타일 */
+        .add-review-btn {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .add-review-btn a {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .add-review-btn a:hover {
+            background-color: #0056b3;
+        }
+
+        /* 검색창 스타일 */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-container button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 리뷰 목록 스타일 */
+        .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-group-item {
+            background-color: #fafafa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+        .list-group-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .list-group-item h5 {
+            font-size: 1.1em;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        .seller-link, .buyer-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .seller-link:hover, .buyer-link:hover {
+            color: #ff7f50;
+        }
+        .list-group-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .list-group-item .text-warning {
+            color: #ffc107;
+        }
+        .list-group-item span {
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        /* 버튼 스타일 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-outline-dark {
+            font-weight: bold;
+            border-radius: 25px;
+            color: #333;
+            box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #f9f9f9;
+            transition: 0.3s ease;
+            padding: 10px 20px; /* 버튼 패딩 추가 */
+            text-align: center; /* 텍스트 정렬 */
+            text-decoration: none; /* 텍스트 밑줄 제거 */
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #D3D3D3;
+            color: #003366;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container container-div">
+    <h1>추천 리뷰</h1>
+    <div class="add-review-btn">
+        <a th:href="@{/review/register}">등록하기</a>
+    </div>
+
+    <!-- 검색 기능 -->
+    <div class="search-container">
+        <form th:action="@{/review/sellerId}" method="get">
+            <input type="text" name="sellerId" placeholder="판매자ID 검색" required>
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+    <!-- 메시지 출력 -->
+    <div th:if="${message}" th:text="${message}"></div>
+
+    <!-- 리뷰 목록 -->
+    <div id="reviewList" class="mt-3">
+        <ul class="list-group">
+            <th:block th:each="review : ${list}">
+                <li class="list-group-item">
+                    <h5>
+                        <a th:href="@{/review/seller/{sellerId}(sellerId=${review.sellerId})}" class="seller-link" th:text="${review.sellerId}">판매자</a>
+                    </h5>
+                    <img th:src="${review.buyerProfile}" alt="구매자 프로필">
+                    <a th:href="@{/review/buyer/{buyerId}(buyerId=${review.buyerId})}" class="buyer-link">
+                        <strong th:text="${review.buyerId}"></strong>
+                    </a>
+                    <span th:text="${review.buyerAddress}">지역</span>
+                    <div style="display: flex;">
+                        <span th:each="i : ${#numbers.sequence(1, review.rating)}" class="text-warning">★</span>
+                    </div>
+                    <span th:text="${review.comment}">리뷰 내용</span>
+
+                    <div th:if="${review.buyerId == member.id}" class="d-inline-block ml-3">
+                        <form th:action="@{/review/remove(no=${review.reviewNo})}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-danger">삭제</button>
+                        </form>
+                    </div>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+</div>
+<th:block th:replace="~{layout/fragments/footer :: footerFragment}"></th:block>
+</body>
+</html>
