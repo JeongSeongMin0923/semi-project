@@ -4,6 +4,7 @@ import com.example.anysale.product.dto.ProductDTO;
 import com.example.anysale.product.entity.Product;
 import com.example.anysale.product.repository.ProductRepository;
 import com.example.anysale.util.FileUtil;
+import com.example.anysale.util.S3FileUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,8 +29,12 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
+//    @Autowired
+//    private FileUtil fileUtil;
+
     @Autowired
-    private FileUtil fileUtil;
+    S3FileUtil fileUtil;
+
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final SecureRandom random = new SecureRandom();

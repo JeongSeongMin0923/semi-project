@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +29,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/products","/product/**","/products/**","/member/login", "/member/register", "/css/**", "/js/**","/review/list", "/member/**", "/assets/**", "/likeList/**").permitAll() // 로그인, 회원가입 및 정적 자원은 모두에게 허용
+                        .requestMatchers("/","/**","/products","/product/**","/products/**","/member/login", "/member/register", "/css/**", "/js/**","/review/list", "/member/**", "/assets/**", "/likeList/**","/uploadfile/**").permitAll() // 로그인, 회원가입 및 정적 자원은 모두에게 허용
                         .requestMatchers("/member/adminPage").hasRole("ADMIN") // ROLE_ADMIN만 접근 가능
                         .anyRequest().hasRole("USER")// 그 외 모든 요청은 인증 필요
                 )
@@ -58,6 +61,20 @@ public class SecurityConfig {
 
     return http.build();
   }
+
+    @Bean
+    protected CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*"); // 모든 출처에 대해 허용
+        corsConfiguration.addAllowedMethod("*"); // 모든 메소드에 대해 허용
+        corsConfiguration.addAllowedHeader("*"); // 모든 헤더에 대해 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration); // 모든 패턴에 corsConfiguration 을 적용
+
+        return source;
+    }
 
   @Bean
   public LoginSuccessHandler successHandler() {

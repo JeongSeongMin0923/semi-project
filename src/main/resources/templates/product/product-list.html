@@ -217,7 +217,9 @@
             const productCard = `
             <div class="col mb-5">
                 <div class="card h-100">
-                    <img class="card-img-top p-1" src="/uploadfile/${product.imageUrl}" alt="상품이미지" onerror="this.src='/uploadfile/default-image.png';" />
+                    <img src="${product.imageUrl}" alt="상품 이미지">
+
+
                     <div class="card-body p-4">
                         <div class="text-center">
                             <h5 class="fw-bolder">${product.title}</h5>

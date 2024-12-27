@@ -30,7 +30,7 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div th:each="product : ${products}" class="col">
             <div class="card h-100 shadow-sm">
-                <img th:src="${product.imageUrl}" class="card-img-top" alt="상품 이미지">
+                <img th:src="${product.imageUrl}" alt="상품 이미지">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${product.content}"></h5>
                     <p class="card-text">
